@@ -19,12 +19,12 @@ public class AuthService {
     private PasswordEncoder passwordEncoder;
     
     public AuthResponse signup(SignupRequest request) {
-        // Proveri da li korisnik već postoji
+        // Check if user already exists
         if (userRepository.existsByEmail(request.getEmail())) {
-            return AuthResponse.error("Korisnik sa ovim email-om već postoji");
+            return AuthResponse.error("Email is already registered.");
         }
         
-        // Kreiraj novog korisnika
+        // Create new user
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
@@ -33,25 +33,25 @@ public class AuthService {
         
         userRepository.save(user);
         
-        return AuthResponse.success(null, "Korisnik uspešno registrovan");
+        return AuthResponse.success(null, "User registered successfully.");
     }
     
     public AuthResponse signin(SigninRequest request) {
-        // Pronađi korisnika po email-u
+        // Find user by email
         User user = userRepository.findByEmail(request.getEmail())
                 .orElse(null);
         
         if (user == null) {
-            return AuthResponse.error("Korisnik sa ovim email-om ne postoji");
+            return AuthResponse.error("User with this email does not exist.");
         }
         
-        // Proveri lozinku
+        // Check password
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return AuthResponse.error("Pogrešna lozinka");
+            return AuthResponse.error("Incorrect password.");
         }
         
-        // Ovde bi trebalo da generišete JWT token
-        // Za sada vraćamo uspešan odgovor bez tokena
-        return AuthResponse.success("dummy-token", "Uspešno prijavljivanje");
+        // Here you should generate JWT token
+        // For now, return a successful response with a dummy token
+        return AuthResponse.success("dummy-token", "Login successful.");
     }
 } 
