@@ -105,7 +105,7 @@ class ApiService {
   }
 
   // Helper method to set auth data
-  setAuthData(token: string, user: any) {
+  setAuthData(token: string, user: AuthResponse['user']) {
     localStorage.setItem('authToken', token);
     localStorage.setItem('user', JSON.stringify(user));
   }
