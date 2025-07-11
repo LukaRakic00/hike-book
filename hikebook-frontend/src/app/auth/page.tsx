@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
 import { useAuth } from '../../hooks/useAuth';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import './auth.css';
@@ -124,12 +124,12 @@ function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
   return (
     <div className="auth-flex">
       <div className="auth-img-col">
-        <Image src={images[imgIdx]} alt="mountain" className="auth-img" fill style={{ objectFit: 'cover' }} />
+        <img src={images[imgIdx]} alt="mountain" className="auth-img" width={800} height={1200} style={{ objectFit: 'cover' }} />
         <div className="auth-img-overlay" />
       </div>
       <div className="auth-form-col">
         <div className="auth-logo-wrap">
-          <Image src="/logo.svg" alt="Hike&Book logo" className="auth-logo-centered" width={120} height={40} />
+          <img src="/logo.svg" alt="Hike&Book logo" className="auth-logo-centered" width={120} height={40} />
           <h1 className="auth-title-centered">Hike&Book</h1>
         </div>
         <form className="auth-form" onSubmit={handleSubmit}>
@@ -205,20 +205,16 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Sign up failed';
-      // If error message contains 'email', show toast
-      if (msg.toLowerCase().includes('email')) {
-        setToast('Email je već registrovan. Pokušajte sa drugim emailom.');
-      } else {
-        setError(msg);
-      }
+      setToast(msg);
     }
   };
 
   return (
     <div className="auth-flex">
       <div className="auth-form-col">
+        {toast && <Toast message={toast} onClose={() => setToast('')} />}
         <div className="auth-logo-wrap">
-          <Image src="/logo.svg" alt="Hike&Book logo" className="auth-logo-centered" width={120} height={40} />
+          <img src="/logo.svg" alt="Hike&Book logo" className="auth-logo-centered" width={120} height={40} />
           <h1 className="auth-title-centered">Hike&Book</h1>
         </div>
         <form className="auth-form" onSubmit={handleSubmit}>
@@ -326,7 +322,7 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
         </p>
       </div>
       <div className="auth-img-col">
-        <Image src={images[imgIdx]} alt="mountain" className="auth-img" fill style={{ objectFit: 'cover' }} />
+        <img src={images[imgIdx]} alt="mountain" className="auth-img" width={800} height={1200} style={{ objectFit: 'cover' }} />
         <div className="auth-img-overlay" />
       </div>
     </div>
@@ -337,10 +333,10 @@ function MobileAuthSwitcher({ mode, setMode, imgIdx }: { mode: 'signin' | 'signu
   return (
     <div className="mobile-auth-root">
       <div className="mobile-auth-img-wrap">
-        <Image src={images[imgIdx]} alt="mountain" className="mobile-auth-img" fill style={{ objectFit: 'cover' }} />
+        <img src={images[imgIdx]} alt="mountain" className="mobile-auth-img" width={600} height={180} />
       </div>
       <div className="mobile-auth-logo-wrap">
-        <Image src="/logo.svg" alt="Hike&Book logo" className="mobile-auth-logo" width={100} height={35} />
+        <img src="/logo.svg" alt="Hike&Book logo" className="mobile-auth-logo" width={100} height={35} />
         <h1 className="mobile-auth-title">Hike&Book</h1>
       </div>
       <div className="mobile-auth-form-wrap">
@@ -359,6 +355,7 @@ function MobileAuthSignIn({ onSwitch }: { onSwitch: () => void }) {
   const [form, setForm] = useState({ email: '', password: '', remember: false });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string>('');
+  const [toast, setToast] = useState<string>('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -372,12 +369,18 @@ function MobileAuthSignIn({ onSwitch }: { onSwitch: () => void }) {
         window.location.href = '/dashboard';
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Sign in failed');
+      const msg = err instanceof Error ? err.message : 'Sign in failed';
+      if (msg.toLowerCase().includes('email') || msg.toLowerCase().includes('password')) {
+        setToast('Pogrešan email ili lozinka.');
+      } else {
+        setError(msg);
+      }
     }
   };
 
   return (
     <form className="mobile-auth-form" onSubmit={handleSubmit}>
+      {toast && <Toast message={toast} onClose={() => setToast('')} />}
       {error && <div className="auth-error">{error}</div>}
       <div className="auth-field">
         <label htmlFor="email">Email</label>
@@ -431,6 +434,7 @@ function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
   const [showPassword, setShowPassword] = useState(false);
   const [focus, setFocus] = useState<string | null>(null);
   const [error, setError] = useState<string>('');
+  const [toast, setToast] = useState<string>('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -446,12 +450,14 @@ function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
         window.location.href = '/dashboard';
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Sign up failed');
+      const msg = err instanceof Error ? err.message : 'Sign up failed';
+      setToast(msg);
     }
   };
 
   return (
     <form className="mobile-auth-form" onSubmit={handleSubmit}>
+      {toast && <Toast message={toast} onClose={() => setToast('')} />}
       {error && <div className="auth-error">{error}</div>}
       <div className="auth-field">
         <label htmlFor="name">Name</label>

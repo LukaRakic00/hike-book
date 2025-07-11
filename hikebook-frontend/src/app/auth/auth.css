@@ -59,7 +59,7 @@
 .auth-title-centered {
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
-  font-size: 2.2rem;
+  font-size: 1.7rem;
   margin: 0;
   color: #111;
   letter-spacing: 0.5px;
@@ -67,14 +67,14 @@
 }
 .auth-form {
   width: 100%;
-  max-width: 350px;
+  max-width: 340px;
   background: #fff;
   border-radius: 12px;
-  padding: 32px 24px 24px 24px;
+  padding: 24px 18px 18px 18px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 .auth-field-row {
   display: flex;
@@ -154,11 +154,11 @@
   width: 100%;
   background: #111827;
   color: #fff;
-  padding: 12px 0;
+  padding: 10px 0;
   border: none;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 18px;
+  font-size: 16px;
   margin-top: 8px;
   cursor: pointer;
   transition: background 0.2s;
@@ -234,12 +234,17 @@
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
+    overflow-x: hidden;
   }
   .mobile-auth-img-wrap {
     width: 100vw;
     height: 180px;
     overflow: hidden;
     background: #eee;
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+    margin-top: 0;
   }
   .mobile-auth-img {
     width: 100vw;
@@ -247,23 +252,25 @@
     object-fit: cover;
     object-position: center;
     display: block;
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
   }
   .mobile-auth-logo-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 18px;
-    margin-bottom: 10px;
+    margin-top: 28px;
+    margin-bottom: 18px;
   }
   .mobile-auth-logo {
-    width: 48px;
-    height: 48px;
-    margin-bottom: 8px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 10px;
   }
   .mobile-auth-title {
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
-    font-size: 1.5rem;
+    font-size: 2rem;
     color: #111;
     margin: 0;
     letter-spacing: 0.5px;
@@ -282,35 +289,45 @@
     background: #fff;
     border-radius: 0;
     box-shadow: none;
-    padding: 18px 4vw 8px 4vw;
+    padding: 24px 5vw 12px 5vw;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
   }
   .mobile-auth-form .auth-btn {
-    font-size: 19px;
-    padding: 15px 0;
-    border-radius: 10px;
-    margin-top: 10px;
+    font-size: 20px;
+    padding: 18px 0;
+    border-radius: 12px;
+    margin-top: 14px;
   }
   .mobile-auth-form .auth-bottom-text {
-    font-size: 15px;
-    margin-top: 18px;
+    font-size: 16px;
+    margin-top: 22px;
   }
   .mobile-auth-form .auth-link {
-    font-size: 15px;
+    font-size: 16px;
   }
   .mobile-auth-form .auth-field {
-    gap: 5px;
+    gap: 7px;
   }
   .mobile-auth-form .auth-input-wrap input {
-    font-size: 17px;
-    padding: 13px 40px 13px 36px;
-    border-radius: 9px;
+    font-size: 18px;
+    padding: 15px 40px 15px 36px;
+    border-radius: 11px;
   }
   .mobile-auth-form .auth-field-msg {
-    font-size: 13px;
+    font-size: 14px;
     min-height: 18px;
     margin-left: 2px;
+  }
+  .auth-error, .Toast {
+    font-size: 16px !important;
+    padding: 14px 18px !important;
+    border-radius: 10px !important;
+    top: 16px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    max-width: 90vw;
+    text-align: center;
   }
 } 
