@@ -1,5 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../hooks/useAuth';
+import LoadingSpinner from '../../components/LoadingSpinner';
 import './auth.css';
 
 const images = [
@@ -69,8 +71,27 @@ export default function AuthSwitcher() {
 }
 
 function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void }) {
+  const { signIn, isLoading } = useAuth();
   const [form, setForm] = useState({ email: '', password: '', remember: false });
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string>('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const response = await signIn({
+        email: form.email,
+        password: form.password,
+      });
+      if (response.success) {
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Sign in failed');
+    }
+  };
+
   return (
     <div className="auth-flex">
       <div className="auth-img-col">
@@ -82,35 +103,45 @@ function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
           <img src="/logo.svg" alt="Hike&Book logo" className="auth-logo-centered" />
           <h1 className="auth-title-centered">Hike&Book</h1>
         </div>
-        <form className="auth-form" onSubmit={e => { e.preventDefault(); alert(JSON.stringify(form, null, 2)); }}>
+        <form className="auth-form" onSubmit={handleSubmit}>
+          {error && <div className="auth-error">{error}</div>}
           <div className="auth-field">
             <label htmlFor="email">Email</label>
             <div className="auth-input-wrap">
               <span className="auth-input-icon">@</span>
-              <input id="email" name="email" type="email" placeholder="Enter your email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required />
+              <input id="email" name="email" type="email" placeholder="Enter your email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required disabled={isLoading} />
             </div>
           </div>
           <div className="auth-field">
             <label htmlFor="password">Password</label>
             <div className="auth-input-wrap">
               <span className="auth-input-icon"><LockIcon /></span>
-              <input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Enter your password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} required />
-              <button type="button" className="auth-eye-btn" onClick={() => setShowPassword(v => !v)} aria-label={showPassword ? 'Hide password' : 'Show password'}>
+              <input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Enter your password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} required disabled={isLoading} />
+              <button type="button" className="auth-eye-btn" onClick={() => setShowPassword(v => !v)} aria-label={showPassword ? 'Hide password' : 'Show password'} disabled={isLoading}>
                 <EyeIcon open={showPassword} />
               </button>
             </div>
           </div>
           <div className="auth-row">
             <label className="auth-remember">
-              <input type="checkbox" name="remember" checked={form.remember} onChange={e => setForm(f => ({ ...f, remember: e.target.checked }))} /> Remember me
+              <input type="checkbox" name="remember" checked={form.remember} onChange={e => setForm(f => ({ ...f, remember: e.target.checked }))} disabled={isLoading} /> Remember me
             </label>
             <a href="#" className="auth-forgot">Forgot password?</a>
           </div>
-          <button type="submit" className="auth-btn">Sign In</button>
+          <button type="submit" className="auth-btn" disabled={isLoading}>
+            {isLoading ? (
+              <div className="auth-btn-content">
+                <LoadingSpinner size="sm" />
+                <span>Signing In...</span>
+              </div>
+            ) : (
+              'Sign In'
+            )}
+          </button>
         </form>
         <p className="auth-bottom-text">
           Don’t have an account?{' '}
-          <button className="auth-link" onClick={onSwitch}>Sign up</button>
+          <button className="auth-link" onClick={onSwitch} disabled={isLoading}>Sign up</button>
         </p>
       </div>
     </div>
@@ -118,14 +149,35 @@ function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
 }
 
 function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void }) {
+  const { signUp, isLoading } = useAuth();
   const [form, setForm] = useState({
     name: '',
     email: '',
-    phone_number: '',
+    phoneNumber: '',
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [focus, setFocus] = useState<string | null>(null);
+  const [error, setError] = useState<string>('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const response = await signUp({
+        name: form.name,
+        email: form.email,
+        phoneNumber: form.phoneNumber || undefined,
+        password: form.password,
+      });
+      if (response.success) {
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Sign up failed');
+    }
+  };
+
   return (
     <div className="auth-flex">
       <div className="auth-form-col">
@@ -133,7 +185,8 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
           <img src="/logo.svg" alt="Hike&Book logo" className="auth-logo-centered" />
           <h1 className="auth-title-centered">Hike&Book</h1>
         </div>
-        <form className="auth-form" onSubmit={e => { e.preventDefault(); alert(JSON.stringify(form, null, 2)); }}>
+        <form className="auth-form" onSubmit={handleSubmit}>
+          {error && <div className="auth-error">{error}</div>}
           <div className="auth-field">
             <label htmlFor="name">Name</label>
             <div className="auth-input-wrap">
@@ -148,6 +201,7 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
                 required
                 onFocus={() => setFocus('name')}
                 onBlur={() => setFocus(focus === 'name' ? null : focus)}
+                disabled={isLoading}
               />
             </div>
             {focus === 'name' && !form.name && (
@@ -168,6 +222,7 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
                 required
                 onFocus={() => setFocus('email')}
                 onBlur={() => setFocus(focus === 'email' ? null : focus)}
+                disabled={isLoading}
               />
             </div>
             {focus === 'email' && !form.email && (
@@ -175,21 +230,22 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
             )}
           </div>
           <div className="auth-field">
-            <label htmlFor="phone_number">Phone Number</label>
+            <label htmlFor="phoneNumber">Phone Number</label>
             <div className="auth-input-wrap">
               <span className="auth-input-icon"><PhoneIcon /></span>
               <input
-                id="phone_number"
-                name="phone_number"
+                id="phoneNumber"
+                name="phoneNumber"
                 type="tel"
                 placeholder="Enter your phone number"
-                value={form.phone_number}
-                onChange={e => setForm(f => ({ ...f, phone_number: e.target.value }))}
-                onFocus={() => setFocus('phone_number')}
-                onBlur={() => setFocus(focus === 'phone_number' ? null : focus)}
+                value={form.phoneNumber}
+                onChange={e => setForm(f => ({ ...f, phoneNumber: e.target.value }))}
+                onFocus={() => setFocus('phoneNumber')}
+                onBlur={() => setFocus(focus === 'phoneNumber' ? null : focus)}
+                disabled={isLoading}
               />
             </div>
-            {focus === 'phone_number' && (
+            {focus === 'phoneNumber' && (
               <div className="auth-field-msg">This field is optional</div>
             )}
           </div>
@@ -207,8 +263,9 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
                 required
                 onFocus={() => setFocus('password')}
                 onBlur={() => setFocus(focus === 'password' ? null : focus)}
+                disabled={isLoading}
               />
-              <button type="button" className="auth-eye-btn" onClick={() => setShowPassword(v => !v)} aria-label={showPassword ? 'Hide password' : 'Show password'}>
+              <button type="button" className="auth-eye-btn" onClick={() => setShowPassword(v => !v)} aria-label={showPassword ? 'Hide password' : 'Show password'} disabled={isLoading}>
                 <EyeIcon open={showPassword} />
               </button>
             </div>
@@ -216,11 +273,20 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
               <div className="auth-field-msg">This field is required</div>
             )}
           </div>
-          <button type="submit" className="auth-btn">Sign Up</button>
+          <button type="submit" className="auth-btn" disabled={isLoading}>
+            {isLoading ? (
+              <div className="auth-btn-content">
+                <LoadingSpinner size="sm" />
+                <span>Signing Up...</span>
+              </div>
+            ) : (
+              'Sign Up'
+            )}
+          </button>
         </form>
         <p className="auth-bottom-text">
           Already have an account?{' '}
-          <button className="auth-link" onClick={onSwitch}>Sign In</button>
+          <button className="auth-link" onClick={onSwitch} disabled={isLoading}>Sign In</button>
         </p>
       </div>
       <div className="auth-img-col">
@@ -253,53 +319,104 @@ function MobileAuthSwitcher({ mode, setMode, imgIdx }: { mode: 'signin' | 'signu
 }
 
 function MobileAuthSignIn({ onSwitch }: { onSwitch: () => void }) {
+  const { signIn, isLoading } = useAuth();
   const [form, setForm] = useState({ email: '', password: '', remember: false });
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string>('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const response = await signIn({
+        email: form.email,
+        password: form.password,
+      });
+      if (response.success) {
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Sign in failed');
+    }
+  };
+
   return (
-    <form className="mobile-auth-form" onSubmit={e => { e.preventDefault(); alert(JSON.stringify(form, null, 2)); }}>
+    <form className="mobile-auth-form" onSubmit={handleSubmit}>
+      {error && <div className="auth-error">{error}</div>}
       <div className="auth-field">
         <label htmlFor="email">Email</label>
         <div className="auth-input-wrap">
           <span className="auth-input-icon">@</span>
-          <input id="email" name="email" type="email" placeholder="Enter your email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required />
+          <input id="email" name="email" type="email" placeholder="Enter your email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required disabled={isLoading} />
         </div>
       </div>
       <div className="auth-field">
         <label htmlFor="password">Password</label>
         <div className="auth-input-wrap">
           <span className="auth-input-icon"><LockIcon /></span>
-          <input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Enter your password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} required />
-          <button type="button" className="auth-eye-btn" onClick={() => setShowPassword(v => !v)} aria-label={showPassword ? 'Hide password' : 'Show password'}>
+          <input id="password" name="password" type={showPassword ? 'text' : 'password'} placeholder="Enter your password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} required disabled={isLoading} />
+          <button type="button" className="auth-eye-btn" onClick={() => setShowPassword(v => !v)} aria-label={showPassword ? 'Hide password' : 'Show password'} disabled={isLoading}>
             <EyeIcon open={showPassword} />
           </button>
         </div>
       </div>
       <div className="auth-row">
         <label className="auth-remember">
-          <input type="checkbox" name="remember" checked={form.remember} onChange={e => setForm(f => ({ ...f, remember: e.target.checked }))} /> Remember me
+          <input type="checkbox" name="remember" checked={form.remember} onChange={e => setForm(f => ({ ...f, remember: e.target.checked }))} disabled={isLoading} /> Remember me
         </label>
         <a href="#" className="auth-forgot">Forgot password?</a>
       </div>
-      <button type="submit" className="auth-btn">Sign In</button>
+      <button type="submit" className="auth-btn" disabled={isLoading}>
+        {isLoading ? (
+          <div className="auth-btn-content">
+            <LoadingSpinner size="sm" />
+            <span>Signing In...</span>
+          </div>
+        ) : (
+          'Sign In'
+        )}
+      </button>
       <p className="auth-bottom-text">
         Don’t have an account?{' '}
-        <button className="auth-link" onClick={onSwitch}>Sign up</button>
+        <button className="auth-link" onClick={onSwitch} disabled={isLoading}>Sign up</button>
       </p>
     </form>
   );
 }
 
 function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
+  const { signUp, isLoading } = useAuth();
   const [form, setForm] = useState({
     name: '',
     email: '',
-    phone_number: '',
+    phoneNumber: '',
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [focus, setFocus] = useState<string | null>(null);
+  const [error, setError] = useState<string>('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const response = await signUp({
+        name: form.name,
+        email: form.email,
+        phoneNumber: form.phoneNumber || undefined,
+        password: form.password,
+      });
+      if (response.success) {
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Sign up failed');
+    }
+  };
+
   return (
-    <form className="mobile-auth-form" onSubmit={e => { e.preventDefault(); alert(JSON.stringify(form, null, 2)); }}>
+    <form className="mobile-auth-form" onSubmit={handleSubmit}>
+      {error && <div className="auth-error">{error}</div>}
       <div className="auth-field">
         <label htmlFor="name">Name</label>
         <div className="auth-input-wrap">
@@ -314,6 +431,7 @@ function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
             required
             onFocus={() => setFocus('name')}
             onBlur={() => setFocus(focus === 'name' ? null : focus)}
+            disabled={isLoading}
           />
         </div>
         {focus === 'name' && !form.name && (
@@ -334,6 +452,7 @@ function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
             required
             onFocus={() => setFocus('email')}
             onBlur={() => setFocus(focus === 'email' ? null : focus)}
+            disabled={isLoading}
           />
         </div>
         {focus === 'email' && !form.email && (
@@ -341,21 +460,22 @@ function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
         )}
       </div>
       <div className="auth-field">
-        <label htmlFor="phone_number">Phone Number</label>
+        <label htmlFor="phoneNumber">Phone Number</label>
         <div className="auth-input-wrap">
           <span className="auth-input-icon"><PhoneIcon /></span>
           <input
-            id="phone_number"
-            name="phone_number"
+            id="phoneNumber"
+            name="phoneNumber"
             type="tel"
             placeholder="Enter your phone number"
-            value={form.phone_number}
-            onChange={e => setForm(f => ({ ...f, phone_number: e.target.value }))}
-            onFocus={() => setFocus('phone_number')}
-            onBlur={() => setFocus(focus === 'phone_number' ? null : focus)}
+            value={form.phoneNumber}
+            onChange={e => setForm(f => ({ ...f, phoneNumber: e.target.value }))}
+            onFocus={() => setFocus('phoneNumber')}
+            onBlur={() => setFocus(focus === 'phoneNumber' ? null : focus)}
+            disabled={isLoading}
           />
         </div>
-        {focus === 'phone_number' && (
+        {focus === 'phoneNumber' && (
           <div className="auth-field-msg">This field is optional</div>
         )}
       </div>
@@ -373,8 +493,9 @@ function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
             required
             onFocus={() => setFocus('password')}
             onBlur={() => setFocus(focus === 'password' ? null : focus)}
+            disabled={isLoading}
           />
-          <button type="button" className="auth-eye-btn" onClick={() => setShowPassword(v => !v)} aria-label={showPassword ? 'Hide password' : 'Show password'}>
+          <button type="button" className="auth-eye-btn" onClick={() => setShowPassword(v => !v)} aria-label={showPassword ? 'Hide password' : 'Show password'} disabled={isLoading}>
             <EyeIcon open={showPassword} />
           </button>
         </div>
@@ -382,10 +503,19 @@ function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
           <div className="auth-field-msg">This field is required</div>
         )}
       </div>
-      <button type="submit" className="auth-btn">Sign Up</button>
+      <button type="submit" className="auth-btn" disabled={isLoading}>
+        {isLoading ? (
+          <div className="auth-btn-content">
+            <LoadingSpinner size="sm" />
+            <span>Signing Up...</span>
+          </div>
+        ) : (
+          'Sign Up'
+        )}
+      </button>
       <p className="auth-bottom-text">
         Already have an account?{' '}
-        <button className="auth-link" onClick={onSwitch}>Sign In</button>
+        <button className="auth-link" onClick={onSwitch} disabled={isLoading}>Sign In</button>
       </p>
     </form>
   );
