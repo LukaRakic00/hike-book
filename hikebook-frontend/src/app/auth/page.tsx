@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useAuth } from '../../hooks/useAuth';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -45,6 +45,34 @@ function UserIcon() {
 function PhoneIcon() {
   return (
     <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><path stroke="#6b7280" strokeWidth="2" d="M22 16.92V19a2 2 0 01-2.18 2A19.72 19.72 0 013 5.18 2 2 0 015 3h2.09a1 1 0 011 .75l1.1 4.4a1 1 0 01-.29.95l-1.27 1.27a16 16 0 006.29 6.29l1.27-1.27a1 1 0 01.95-.29l4.4 1.1a1 1 0 01.75 1V19a2 2 0 01-2 2z"/></svg>
+  );
+}
+
+function Toast({ message, onClose }: { message: string; onClose: () => void }) {
+  // Auto-hide after 3 seconds
+  const timer = useRef<NodeJS.Timeout | null>(null);
+  useEffect(() => {
+    timer.current = setTimeout(onClose, 3000);
+    return () => {
+      if (timer.current) clearTimeout(timer.current);
+    };
+  }, [onClose]);
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 24,
+      left: '50%',
+      transform: 'translateX(-50%)',
+      background: '#222',
+      color: '#fff',
+      padding: '12px 28px',
+      borderRadius: 8,
+      fontWeight: 500,
+      zIndex: 1000,
+      boxShadow: '0 2px 12px rgba(0,0,0,0.15)'
+    }}>
+      {message}
+    </div>
   );
 }
 
@@ -160,6 +188,7 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
   const [showPassword, setShowPassword] = useState(false);
   const [focus, setFocus] = useState<string | null>(null);
   const [error, setError] = useState<string>('');
+  const [toast, setToast] = useState<string>('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -175,7 +204,13 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
         window.location.href = '/dashboard';
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Sign up failed');
+      const msg = err instanceof Error ? err.message : 'Sign up failed';
+      // If error message contains 'email', show toast
+      if (msg.toLowerCase().includes('email')) {
+        setToast('Email je već registrovan. Pokušajte sa drugim emailom.');
+      } else {
+        setError(msg);
+      }
     }
   };
 
