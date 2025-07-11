@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useAuth } from '../../hooks/useAuth';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import './auth.css';
@@ -95,12 +96,12 @@ function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
   return (
     <div className="auth-flex">
       <div className="auth-img-col">
-        <img src={images[imgIdx]} alt="mountain" className="auth-img" />
+        <Image src={images[imgIdx]} alt="mountain" className="auth-img" fill style={{ objectFit: 'cover' }} />
         <div className="auth-img-overlay" />
       </div>
       <div className="auth-form-col">
         <div className="auth-logo-wrap">
-          <img src="/logo.svg" alt="Hike&Book logo" className="auth-logo-centered" />
+          <Image src="/logo.svg" alt="Hike&Book logo" className="auth-logo-centered" width={120} height={40} />
           <h1 className="auth-title-centered">Hike&Book</h1>
         </div>
         <form className="auth-form" onSubmit={handleSubmit}>
@@ -140,7 +141,7 @@ function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
           </button>
         </form>
         <p className="auth-bottom-text">
-          Don’t have an account?{' '}
+          Don&apos;t have an account?{' '}
           <button className="auth-link" onClick={onSwitch} disabled={isLoading}>Sign up</button>
         </p>
       </div>
@@ -182,7 +183,7 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
     <div className="auth-flex">
       <div className="auth-form-col">
         <div className="auth-logo-wrap">
-          <img src="/logo.svg" alt="Hike&Book logo" className="auth-logo-centered" />
+          <Image src="/logo.svg" alt="Hike&Book logo" className="auth-logo-centered" width={120} height={40} />
           <h1 className="auth-title-centered">Hike&Book</h1>
         </div>
         <form className="auth-form" onSubmit={handleSubmit}>
@@ -290,7 +291,7 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
         </p>
       </div>
       <div className="auth-img-col">
-        <img src={images[imgIdx]} alt="mountain" className="auth-img" />
+        <Image src={images[imgIdx]} alt="mountain" className="auth-img" fill style={{ objectFit: 'cover' }} />
         <div className="auth-img-overlay" />
       </div>
     </div>
@@ -301,10 +302,10 @@ function MobileAuthSwitcher({ mode, setMode, imgIdx }: { mode: 'signin' | 'signu
   return (
     <div className="mobile-auth-root">
       <div className="mobile-auth-img-wrap">
-        <img src={images[imgIdx]} alt="mountain" className="mobile-auth-img" />
+        <Image src={images[imgIdx]} alt="mountain" className="mobile-auth-img" fill style={{ objectFit: 'cover' }} />
       </div>
       <div className="mobile-auth-logo-wrap">
-        <img src="/logo.svg" alt="Hike&Book logo" className="mobile-auth-logo" />
+        <Image src="/logo.svg" alt="Hike&Book logo" className="mobile-auth-logo" width={100} height={35} />
         <h1 className="mobile-auth-title">Hike&Book</h1>
       </div>
       <div className="mobile-auth-form-wrap">
