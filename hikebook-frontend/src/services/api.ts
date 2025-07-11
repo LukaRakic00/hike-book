@@ -1,5 +1,5 @@
 // API service for backend communication
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://hike-book.onrender.com/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://hike-book.onrender.com';
 
 export interface SignUpData {
   name: string;
