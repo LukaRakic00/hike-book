@@ -190,6 +190,12 @@
   font-weight: 400;
   letter-spacing: 0.1px;
 }
+.auth-btn-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+}
 @media (max-width: 900px) {
   .auth-flex {
     flex-direction: column-reverse;

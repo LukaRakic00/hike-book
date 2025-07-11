@@ -47,12 +47,15 @@ class ApiService {
 
     try {
       const response = await fetch(url, config);
-      const data = await response.json();
-
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
       if (!response.ok) {
         throw new Error(data.message || 'An error occurred');
       }
-
       return data;
     } catch (error) {
       if (error instanceof Error) {
