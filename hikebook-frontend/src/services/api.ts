@@ -63,14 +63,14 @@ class ApiService {
   }
 
   async signUp(data: SignUpData): Promise<AuthResponse> {
-    return this.request<AuthResponse>('/auth/signup', {
+    return this.request<AuthResponse>('/api/auth/signup', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
   async signIn(data: SignInData): Promise<AuthResponse> {
-    return this.request<AuthResponse>('/auth/signin', {
+    return this.request<AuthResponse>('/api/auth/signin', {
       method: 'POST',
       body: JSON.stringify(data),
     });
