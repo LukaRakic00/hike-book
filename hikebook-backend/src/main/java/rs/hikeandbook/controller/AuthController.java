@@ -8,6 +8,8 @@ import rs.hikeandbook.dto.AuthResponse;
 import rs.hikeandbook.dto.SigninRequest;
 import rs.hikeandbook.dto.SignupRequest;
 import rs.hikeandbook.service.AuthService;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -18,24 +20,28 @@ public class AuthController {
     private AuthService authService;
     
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> signup(@Valid @RequestBody SignupRequest request) {
+    public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {
         AuthResponse response = authService.signup(request);
         
         if (response.isSuccess()) {
             return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.badRequest().body(response);
+            Map<String, String> error = new HashMap<>();
+            error.put("message", response.getMessage());
+            return ResponseEntity.badRequest().body(error);
         }
     }
     
     @PostMapping("/signin")
-    public ResponseEntity<AuthResponse> signin(@Valid @RequestBody SigninRequest request) {
+    public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest request) {
         AuthResponse response = authService.signin(request);
         
         if (response.isSuccess()) {
             return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.badRequest().body(response);
+            Map<String, String> error = new HashMap<>();
+            error.put("message", response.getMessage());
+            return ResponseEntity.badRequest().body(error);
         }
     }
 } 
