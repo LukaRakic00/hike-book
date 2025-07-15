@@ -1,5 +1,14 @@
+// env.d.ts
+declare const process: {
+  env: {
+    NEXT_PUBLIC_API_URL?: string;
+    [key: string]: string | undefined;
+  };
+};
+
+// eslint-disable-next-line no-undef
 // API service for backend communication
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://hike-book.onrender.com';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://hike-book.onrender.com';
 
 export interface SignUpData {
   name: string;
