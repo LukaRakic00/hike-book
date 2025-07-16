@@ -2,21 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isAuth = request.cookies.get('auth')?.value === 'true';
-
+  
   // Allow access to /auth page without auth
   if (pathname === '/auth') {
     return NextResponse.next();
   }
 
-  // If not authenticated, redirect to /auth
-  if (!isAuth) {
-    const authUrl = request.nextUrl.clone();
-    authUrl.pathname = '/auth';
-    return NextResponse.redirect(authUrl);
+  // Allow access to static files and API routes
+  if (pathname.startsWith('/_next') || pathname.startsWith('/api') || pathname.startsWith('/favicon.ico') || pathname.startsWith('/public')) {
+    return NextResponse.next();
   }
 
-  // Otherwise, allow
+  // For client-side routes, we'll let the client handle auth
+  // The client will redirect to /auth if not authenticated
   return NextResponse.next();
 }
 

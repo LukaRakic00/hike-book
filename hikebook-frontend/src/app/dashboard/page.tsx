@@ -3,6 +3,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/Navbar';
+import HeroSection from '../../components/HeroSection';
 import './dashboard.css';
 
 export default function Dashboard() {
@@ -11,7 +12,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push('/auth');
+      router.replace('/auth');
     }
   }, [isAuthenticated, isLoading, router]);
 
@@ -31,6 +32,7 @@ export default function Dashboard() {
   return (
     <div className="dashboard">
       <Navbar />
+      <HeroSection />
       <div className="dashboard-content">
         <div className="dashboard-header">
           <h1>Welcome to Hike&Book Dashboard</h1>

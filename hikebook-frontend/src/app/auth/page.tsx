@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '../../hooks/useAuth';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import './auth.css';
@@ -100,10 +101,20 @@ export default function AuthSwitcher() {
 }
 
 function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void }) {
-  const { signIn, isLoading } = useAuth();
+  const { signIn, isLoading, isAuthenticated } = useAuth();
+  const router = useRouter();
   const [form, setForm] = useState({ email: '', password: '', remember: false });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string>('');
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      setIsRedirecting(true);
+      router.replace('/dashboard');
+    }
+  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,12 +125,49 @@ function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
         password: form.password,
       });
       if (response.success) {
-        window.location.href = '/dashboard';
+        setIsRedirecting(true);
+        // Wait a bit for state to update, then redirect
+        setTimeout(() => {
+          router.replace('/dashboard');
+        }, 100);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign in failed');
     }
   };
+
+  // Show redirecting overlay
+  if (isRedirecting) {
+    return (
+      <div className="auth-flex">
+        <div className="auth-img-col">
+          <img src={images[imgIdx]} alt="mountain" className="auth-img" width={800} height={1200} style={{ objectFit: 'cover' }} />
+          <div className="auth-img-overlay" />
+        </div>
+        <div className="auth-form-col">
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+            gap: '20px'
+          }}>
+            <div style={{
+              width: '60px',
+              height: '60px',
+              border: '4px solid #f3f3f3',
+              borderTop: '4px solid #6366f1',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }} />
+            <h2 style={{ color: '#374151', margin: 0 }}>Welcome to Hike&Book!</h2>
+            <p style={{ color: '#6b7280', margin: 0 }}>Redirecting to dashboard...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-flex">
@@ -179,6 +227,7 @@ function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
 
 function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void }) {
   const { signUp, isLoading } = useAuth();
+  const router = useRouter();
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -201,7 +250,7 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
         password: form.password,
       });
       if (response.success) {
-        window.location.href = '/dashboard';
+        router.push('/dashboard');
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Sign up failed';
@@ -352,6 +401,7 @@ function MobileAuthSwitcher({ mode, setMode, imgIdx }: { mode: 'signin' | 'signu
 
 function MobileAuthSignIn({ onSwitch }: { onSwitch: () => void }) {
   const { signIn, isLoading } = useAuth();
+  const router = useRouter();
   const [form, setForm] = useState({ email: '', password: '', remember: false });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string>('');
@@ -366,7 +416,7 @@ function MobileAuthSignIn({ onSwitch }: { onSwitch: () => void }) {
         password: form.password,
       });
       if (response.success) {
-        window.location.href = '/dashboard';
+        router.push('/dashboard');
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Sign in failed';
@@ -425,6 +475,7 @@ function MobileAuthSignIn({ onSwitch }: { onSwitch: () => void }) {
 
 function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
   const { signUp, isLoading } = useAuth();
+  const router = useRouter();
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -447,7 +498,7 @@ function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
         password: form.password,
       });
       if (response.success) {
-        window.location.href = '/dashboard';
+        router.push('/dashboard');
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Sign up failed';

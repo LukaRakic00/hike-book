@@ -8,7 +8,7 @@ declare const process: {
 
 // eslint-disable-next-line no-undef
 // API service for backend communication
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://hike-book.onrender.com';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
 
 export interface SignUpData {
   name: string;
@@ -92,12 +92,15 @@ class ApiService {
     const token = localStorage.getItem('authToken');
     if (token) {
       try {
-        await this.request('/auth/signout', {
+        // Try to call backend signout endpoint if it exists
+        await this.request('/api/auth/signout', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         });
+      } catch (error) {
+        // If backend doesn't support signout, just clear local storage
       } finally {
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');

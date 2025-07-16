@@ -42,10 +42,18 @@ export function useAuth() {
       
       const response = await apiService.signUp(data);
       
-      if (response.success && response.token && response.user) {
-        apiService.setAuthData(response.token, response.user);
+      if (response.success && response.token) {
+        // If user is not provided in response, create a basic user object
+        const user = response.user || {
+          id: 1,
+          name: data.name,
+          email: data.email,
+          phoneNumber: data.phoneNumber,
+        };
+        
+        apiService.setAuthData(response.token, user);
         setAuthState({
-          user: response.user,
+          user: user,
           token: response.token,
           isLoading: false,
           isAuthenticated: true,
@@ -65,10 +73,17 @@ export function useAuth() {
       
       const response = await apiService.signIn(data);
       
-      if (response.success && response.token && response.user) {
-        apiService.setAuthData(response.token, response.user);
+      if (response.success && response.token) {
+        // If user is not provided in response, create a basic user object
+        const user = response.user || {
+          id: 1,
+          name: 'User',
+          email: data.email,
+        };
+        
+        apiService.setAuthData(response.token, user);
         setAuthState({
-          user: response.user,
+          user: user,
           token: response.token,
           isLoading: false,
           isAuthenticated: true,
