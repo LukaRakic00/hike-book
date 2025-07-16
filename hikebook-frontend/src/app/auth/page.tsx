@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../hooks/useAuth';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -50,33 +50,7 @@ function PhoneIcon() {
   );
 }
 
-function Toast({ message, onClose }: { message: string; onClose: () => void }) {
-  // Auto-hide after 3 seconds
-  const timer = useRef<NodeJS.Timeout | null>(null);
-  useEffect(() => {
-    timer.current = setTimeout(onClose, 3000);
-    return () => {
-      if (timer.current) clearTimeout(timer.current);
-    };
-  }, [onClose]);
-  return (
-    <div style={{
-      position: 'fixed',
-      top: 24,
-      left: '50%',
-      transform: 'translateX(-50%)',
-      background: '#222',
-      color: '#fff',
-      padding: '12px 28px',
-      borderRadius: 8,
-      fontWeight: 500,
-      zIndex: 1000,
-      boxShadow: '0 2px 12px rgba(0,0,0,0.15)'
-    }}>
-      {message}
-    </div>
-  );
-}
+
 
 export default function AuthSwitcher() {
   const isMobile = useIsMobile();
