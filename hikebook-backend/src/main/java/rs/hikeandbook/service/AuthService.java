@@ -54,4 +54,24 @@ public class AuthService {
         // For now, return a successful response with a dummy token
         return AuthResponse.success("dummy-token", "Login successful.");
     }
+    
+    public AuthResponse signout(String token) {
+        if (token == null || token.isEmpty()) {
+            return AuthResponse.error("Token is required for signout.");
+        }
+        
+        // Remove "Bearer " prefix if present
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        
+        // Here you should invalidate the JWT token
+        // For now, we'll just return a success response
+        // In a real implementation, you would:
+        // 1. Validate the token
+        // 2. Add it to a blacklist
+        // 3. Or use a shorter expiration time
+        
+        return AuthResponse.success(null, "Successfully signed out.");
+    }
 } 

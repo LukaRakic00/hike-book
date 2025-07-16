@@ -44,4 +44,17 @@ public class AuthController {
             return ResponseEntity.badRequest().body(error);
         }
     }
+    
+    @PostMapping("/signout")
+    public ResponseEntity<?> signout(@RequestHeader(value = "Authorization", required = false) String token) {
+        AuthResponse response = authService.signout(token);
+        
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", response.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
 } 
