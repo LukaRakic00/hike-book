@@ -6,7 +6,6 @@ declare const process: {
   };
 };
 
-// eslint-disable-next-line no-undef
 // API service for backend communication
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
 
@@ -99,7 +98,7 @@ class ApiService {
             'Authorization': `Bearer ${token}`,
           },
         });
-      } catch (error) {
+      } catch {
         // If backend doesn't support signout, just clear local storage
       } finally {
         localStorage.removeItem('authToken');
