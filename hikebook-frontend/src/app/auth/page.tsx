@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../hooks/useAuth';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import ErrorPopup from '../../components/ErrorPopup';
 import './auth.css';
 
 const images = [
@@ -106,6 +107,7 @@ function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
   const [form, setForm] = useState({ email: '', password: '', remember: false });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string>('');
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   // Redirect if already authenticated
@@ -119,6 +121,7 @@ function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setShowErrorPopup(false);
     try {
       const response = await signIn({
         email: form.email,
@@ -132,7 +135,9 @@ function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
         }, 100);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Sign in failed');
+      const errorMessage = err instanceof Error ? err.message : 'Sign in failed';
+      setError(errorMessage);
+      setShowErrorPopup(true);
     }
   };
 
@@ -170,18 +175,23 @@ function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
   }
 
   return (
-    <div className="auth-flex">
-      <div className="auth-img-col">
-        <img src={images[imgIdx]} alt="mountain" className="auth-img" width={800} height={1200} style={{ objectFit: 'cover' }} />
-        <div className="auth-img-overlay" />
-      </div>
-      <div className="auth-form-col">
-        <div className="auth-logo-wrap">
-          <img src="/logo.svg" alt="Hike&Book logo" className="auth-logo-centered" width={120} height={40} />
-          <h1 className="auth-title-centered">Hike&Book</h1>
+    <>
+      <ErrorPopup 
+        message={error} 
+        isVisible={showErrorPopup} 
+        onClose={() => setShowErrorPopup(false)} 
+      />
+      <div className="auth-flex">
+        <div className="auth-img-col">
+          <img src={images[imgIdx]} alt="mountain" className="auth-img" width={800} height={1200} style={{ objectFit: 'cover' }} />
+          <div className="auth-img-overlay" />
         </div>
-        <form className="auth-form" onSubmit={handleSubmit}>
-          {error && <div className="auth-error">{error}</div>}
+        <div className="auth-form-col">
+          <div className="auth-logo-wrap">
+            <img src="/logo.svg" alt="Hike&Book logo" className="auth-logo-centered" width={120} height={40} />
+            <h1 className="auth-title-centered">Hike&Book</h1>
+          </div>
+          <form className="auth-form" onSubmit={handleSubmit}>
           <div className="auth-field">
             <label htmlFor="email">Email</label>
             <div className="auth-input-wrap">
@@ -222,6 +232,7 @@ function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
         </p>
       </div>
     </div>
+    </>
   );
 }
 
@@ -237,11 +248,12 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
   const [showPassword, setShowPassword] = useState(false);
   const [focus, setFocus] = useState<string | null>(null);
   const [error, setError] = useState<string>('');
-  const [toast, setToast] = useState<string>('');
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setShowErrorPopup(false);
     try {
       const response = await signUp({
         name: form.name,
@@ -253,21 +265,26 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
         router.push('/dashboard');
       }
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Sign up failed';
-      setToast(msg);
+      const errorMessage = err instanceof Error ? err.message : 'Sign up failed';
+      setError(errorMessage);
+      setShowErrorPopup(true);
     }
   };
 
   return (
-    <div className="auth-flex">
-      <div className="auth-form-col">
-        {toast && <Toast message={toast} onClose={() => setToast('')} />}
-        <div className="auth-logo-wrap">
-          <img src="/logo.svg" alt="Hike&Book logo" className="auth-logo-centered" width={120} height={40} />
-          <h1 className="auth-title-centered">Hike&Book</h1>
-        </div>
-        <form className="auth-form" onSubmit={handleSubmit}>
-          {error && <div className="auth-error">{error}</div>}
+    <>
+      <ErrorPopup 
+        message={error} 
+        isVisible={showErrorPopup} 
+        onClose={() => setShowErrorPopup(false)} 
+      />
+      <div className="auth-flex">
+        <div className="auth-form-col">
+          <div className="auth-logo-wrap">
+            <img src="/logo.svg" alt="Hike&Book logo" className="auth-logo-centered" width={120} height={40} />
+            <h1 className="auth-title-centered">Hike&Book</h1>
+          </div>
+          <form className="auth-form" onSubmit={handleSubmit}>
           <div className="auth-field">
             <label htmlFor="name">Name</label>
             <div className="auth-input-wrap">
@@ -375,6 +392,7 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
         <div className="auth-img-overlay" />
       </div>
     </div>
+    </>
   );
 }
 
@@ -405,11 +423,12 @@ function MobileAuthSignIn({ onSwitch }: { onSwitch: () => void }) {
   const [form, setForm] = useState({ email: '', password: '', remember: false });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string>('');
-  const [toast, setToast] = useState<string>('');
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setShowErrorPopup(false);
     try {
       const response = await signIn({
         email: form.email,
@@ -419,21 +438,22 @@ function MobileAuthSignIn({ onSwitch }: { onSwitch: () => void }) {
         router.push('/dashboard');
       }
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Sign in failed';
-      if (msg.toLowerCase().includes('email') || msg.toLowerCase().includes('password')) {
-        setToast('Pogrešan email ili lozinka.');
-      } else {
-        setError(msg);
-      }
+      const errorMessage = err instanceof Error ? err.message : 'Sign in failed';
+      setError(errorMessage);
+      setShowErrorPopup(true);
     }
   };
 
   return (
-    <form className="mobile-auth-form" onSubmit={handleSubmit}>
-      {toast && <Toast message={toast} onClose={() => setToast('')} />}
-      {error && <div className="auth-error">{error}</div>}
-      <div className="auth-field">
-        <label htmlFor="email">Email</label>
+    <>
+      <ErrorPopup 
+        message={error} 
+        isVisible={showErrorPopup} 
+        onClose={() => setShowErrorPopup(false)} 
+      />
+      <form className="mobile-auth-form" onSubmit={handleSubmit}>
+        <div className="auth-field">
+          <label htmlFor="email">Email</label>
         <div className="auth-input-wrap">
           <span className="auth-input-icon">@</span>
           <input id="email" name="email" type="email" placeholder="Enter your email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required disabled={isLoading} />
@@ -470,6 +490,7 @@ function MobileAuthSignIn({ onSwitch }: { onSwitch: () => void }) {
         <button className="auth-link" onClick={onSwitch} disabled={isLoading}>Sign up</button>
       </p>
     </form>
+    </>
   );
 }
 
@@ -485,11 +506,12 @@ function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
   const [showPassword, setShowPassword] = useState(false);
   const [focus, setFocus] = useState<string | null>(null);
   const [error, setError] = useState<string>('');
-  const [toast, setToast] = useState<string>('');
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setShowErrorPopup(false);
     try {
       const response = await signUp({
         name: form.name,
@@ -501,115 +523,121 @@ function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
         router.push('/dashboard');
       }
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Sign up failed';
-      setToast(msg);
+      const errorMessage = err instanceof Error ? err.message : 'Sign up failed';
+      setError(errorMessage);
+      setShowErrorPopup(true);
     }
   };
 
   return (
-    <form className="mobile-auth-form" onSubmit={handleSubmit}>
-      {toast && <Toast message={toast} onClose={() => setToast('')} />}
-      {error && <div className="auth-error">{error}</div>}
-      <div className="auth-field">
-        <label htmlFor="name">Name</label>
-        <div className="auth-input-wrap">
-          <span className="auth-input-icon"><UserIcon /></span>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            placeholder="Enter your name"
-            value={form.name}
-            onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-            required
-            onFocus={() => setFocus('name')}
-            onBlur={() => setFocus(focus === 'name' ? null : focus)}
-            disabled={isLoading}
-          />
-        </div>
-        {focus === 'name' && !form.name && (
-          <div className="auth-field-msg">This field is required</div>
-        )}
-      </div>
-      <div className="auth-field">
-        <label htmlFor="email">Email</label>
-        <div className="auth-input-wrap">
-          <span className="auth-input-icon">@</span>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Enter your email"
-            value={form.email}
-            onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-            required
-            onFocus={() => setFocus('email')}
-            onBlur={() => setFocus(focus === 'email' ? null : focus)}
-            disabled={isLoading}
-          />
-        </div>
-        {focus === 'email' && !form.email && (
-          <div className="auth-field-msg">This field is required</div>
-        )}
-      </div>
-      <div className="auth-field">
-        <label htmlFor="phoneNumber">Phone Number</label>
-        <div className="auth-input-wrap">
-          <span className="auth-input-icon"><PhoneIcon /></span>
-          <input
-            id="phoneNumber"
-            name="phoneNumber"
-            type="tel"
-            placeholder="Enter your phone number"
-            value={form.phoneNumber}
-            onChange={e => setForm(f => ({ ...f, phoneNumber: e.target.value }))}
-            onFocus={() => setFocus('phoneNumber')}
-            onBlur={() => setFocus(focus === 'phoneNumber' ? null : focus)}
-            disabled={isLoading}
-          />
-        </div>
-        {focus === 'phoneNumber' && (
-          <div className="auth-field-msg">This field is optional</div>
-        )}
-      </div>
-      <div className="auth-field">
-        <label htmlFor="password">Password</label>
-        <div className="auth-input-wrap">
-          <span className="auth-input-icon"><LockIcon /></span>
-          <input
-            id="password"
-            name="password"
-            type={showPassword ? 'text' : 'password'}
-            placeholder="Enter your password"
-            value={form.password}
-            onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-            required
-            onFocus={() => setFocus('password')}
-            onBlur={() => setFocus(focus === 'password' ? null : focus)}
-            disabled={isLoading}
-          />
-          <button type="button" className="auth-eye-btn" onClick={() => setShowPassword(v => !v)} aria-label={showPassword ? 'Hide password' : 'Show password'} disabled={isLoading}>
-            <EyeIcon open={showPassword} />
-          </button>
-        </div>
-        {focus === 'password' && !form.password && (
-          <div className="auth-field-msg">This field is required</div>
-        )}
-      </div>
-      <button type="submit" className="auth-btn" disabled={isLoading}>
-        {isLoading ? (
-          <div className="auth-btn-content">
-            <LoadingSpinner size="sm" />
-            <span>Signing Up...</span>
+    <>
+      <ErrorPopup 
+        message={error} 
+        isVisible={showErrorPopup} 
+        onClose={() => setShowErrorPopup(false)} 
+      />
+      <form className="mobile-auth-form" onSubmit={handleSubmit}>
+        <div className="auth-field">
+          <label htmlFor="name">Name</label>
+          <div className="auth-input-wrap">
+            <span className="auth-input-icon"><UserIcon /></span>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Enter your name"
+              value={form.name}
+              onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+              required
+              onFocus={() => setFocus('name')}
+              onBlur={() => setFocus(focus === 'name' ? null : focus)}
+              disabled={isLoading}
+            />
           </div>
-        ) : (
-          'Sign Up'
-        )}
-      </button>
-      <p className="auth-bottom-text">
-        Already have an account?{' '}
-        <button className="auth-link" onClick={onSwitch} disabled={isLoading}>Sign In</button>
-      </p>
-    </form>
+          {focus === 'name' && !form.name && (
+            <div className="auth-field-msg">This field is required</div>
+          )}
+        </div>
+        <div className="auth-field">
+          <label htmlFor="email">Email</label>
+          <div className="auth-input-wrap">
+            <span className="auth-input-icon">@</span>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Enter your email"
+              value={form.email}
+              onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+              required
+              onFocus={() => setFocus('email')}
+              onBlur={() => setFocus(focus === 'email' ? null : focus)}
+              disabled={isLoading}
+            />
+          </div>
+          {focus === 'email' && !form.email && (
+            <div className="auth-field-msg">This field is required</div>
+          )}
+        </div>
+        <div className="auth-field">
+          <label htmlFor="phoneNumber">Phone Number</label>
+          <div className="auth-input-wrap">
+            <span className="auth-input-icon"><PhoneIcon /></span>
+            <input
+              id="phoneNumber"
+              name="phoneNumber"
+              type="tel"
+              placeholder="Enter your phone number"
+              value={form.phoneNumber}
+              onChange={e => setForm(f => ({ ...f, phoneNumber: e.target.value }))}
+              onFocus={() => setFocus('phoneNumber')}
+              onBlur={() => setFocus(focus === 'phoneNumber' ? null : focus)}
+              disabled={isLoading}
+            />
+          </div>
+          {focus === 'phoneNumber' && (
+            <div className="auth-field-msg">This field is optional</div>
+          )}
+        </div>
+        <div className="auth-field">
+          <label htmlFor="password">Password</label>
+          <div className="auth-input-wrap">
+            <span className="auth-input-icon"><LockIcon /></span>
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Enter your password"
+              value={form.password}
+              onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+              required
+              onFocus={() => setFocus('password')}
+              onBlur={() => setFocus(focus === 'password' ? null : focus)}
+              disabled={isLoading}
+            />
+            <button type="button" className="auth-eye-btn" onClick={() => setShowPassword(v => !v)} aria-label={showPassword ? 'Hide password' : 'Show password'} disabled={isLoading}>
+              <EyeIcon open={showPassword} />
+            </button>
+          </div>
+          {focus === 'password' && !form.password && (
+            <div className="auth-field-msg">This field is required</div>
+          )}
+        </div>
+        <button type="submit" className="auth-btn" disabled={isLoading}>
+          {isLoading ? (
+            <div className="auth-btn-content">
+              <LoadingSpinner size="sm" />
+              <span>Signing Up...</span>
+            </div>
+          ) : (
+            'Sign Up'
+          )}
+        </button>
+        <p className="auth-bottom-text">
+          Already have an account?{' '}
+          <button className="auth-link" onClick={onSwitch} disabled={isLoading}>Sign In</button>
+        </p>
+      </form>
+    </>
   );
 } 

@@ -39,7 +39,7 @@ export default function Navbar() {
             <Link href="/dashboard">
               <div className="navbar-logo-icon">
                 <Image 
-                  src="/logoDesign/mountain.svg" 
+                  src="/logoDesign/logoWhite.svg" 
                   alt="Hike&Book" 
                   width={32} 
                   height={32} 
