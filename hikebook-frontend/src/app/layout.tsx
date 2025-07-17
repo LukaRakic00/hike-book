@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "./globals.css";
+import { ToastContainer } from "@/components/Toast";
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -16,7 +17,7 @@ const poppins = Poppins({
   subsets: ["latin"],
   weight: ["700"],
   variable: "--font-poppins",
-  display: "swap",
+  
 });
 
 export const metadata: Metadata = {
@@ -31,8 +32,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="description" content="Hike&Book - Sign in and explore hiking adventures!" />
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable}`}>
         {children}
+        <ToastContainer />
       </body>
     </html>
   );
