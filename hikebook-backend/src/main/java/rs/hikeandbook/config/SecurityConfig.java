@@ -1,5 +1,6 @@
 package rs.hikeandbook.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +18,9 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Value("${ALLOWED_ORIGINS:https://*.onrender.com,https://*.vercel.app,http://localhost:*,https://localhost:*}")
+    private String allowedOrigins;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -50,12 +54,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Dozvoli Render frontend i localhost za development
-        configuration.setAllowedOriginPatterns(Arrays.asList(
-            "https://*.onrender.com",
-            "http://localhost:*",
-            "https://localhost:*"
-        ));
+        // Koristi environment variable ili fallback na default vrednosti
+        String[] origins = allowedOrigins.split(",");
+        configuration.setAllowedOriginPatterns(Arrays.asList(origins));
         
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
