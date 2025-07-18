@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import ExploreSidebar from '../../components/ExploreSidebar';
+import { getApiUrl } from '../../utils/apiConfig';
 
 const ExploreMap = dynamic(() => import('../../components/ExploreMap'), {
   ssr: false,
@@ -74,7 +75,7 @@ export default function ExplorePage() {
   const fetchExploreData = async () => {
     try {
       setIsLoadingData(true);
-      const response = await fetch('http://localhost:8080/api/explore');
+      const response = await fetch(getApiUrl('/api/explore'));
       if (!response.ok) {
         throw new Error('Failed to fetch explore data');
       }
@@ -89,7 +90,7 @@ export default function ExplorePage() {
 
   const handleDestinationClick = async (destinationId: number) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/explore/${destinationId}`);
+      const response = await fetch(getApiUrl(`/api/explore/${destinationId}`));
       if (!response.ok) {
         throw new Error('Failed to fetch destination details');
       }

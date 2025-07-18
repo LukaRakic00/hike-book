@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '../../../../hooks/useAuth';
 import LoadingSpinner from '../../../../components/LoadingSpinner';
+import { getApiUrl } from '../../../../utils/apiConfig';
 import './trail-details.css';
 
 interface TrailDetails {
@@ -64,7 +65,7 @@ export default function TrailDetailsPage() {
   const fetchTrailDetails = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8080/api/explore/trail/${trailId}`);
+      const response = await fetch(getApiUrl(`/api/explore/trail/${trailId}`));
       if (!response.ok) {
         throw new Error('Failed to fetch trail details');
       }
@@ -79,7 +80,7 @@ export default function TrailDetailsPage() {
 
   const checkFavoriteStatus = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/favorites');
+      const response = await fetch(getApiUrl('/api/favorites'));
       if (response.ok) {
         const data = await response.json();
         const favoriteIds = data.map((t: { id: number }) => t.id);
@@ -93,12 +94,12 @@ export default function TrailDetailsPage() {
   const toggleFavorite = async () => {
     try {
       if (isFavorite) {
-        await fetch(`http://localhost:8080/api/favorites/${trailId}`, {
+        await fetch(getApiUrl(`/api/favorites/${trailId}`), {
           method: 'DELETE',
         });
         setIsFavorite(false);
       } else {
-        await fetch('http://localhost:8080/api/favorites', {
+        await fetch(getApiUrl('/api/favorites'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

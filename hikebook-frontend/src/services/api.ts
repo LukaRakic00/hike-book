@@ -7,7 +7,10 @@ declare const process: {
 };
 
 // API service for backend communication
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 
+  (typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
+    ? 'https://hikebook-backend.onrender.com' 
+    : 'http://localhost:8080');
 
 export interface SignUpData {
   name: string;
