@@ -4,14 +4,15 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "users")
+@Entity(name = "\"user\"")
 public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(columnDefinition = "SERIAL")
+    private Integer id;
     
     @NotBlank
     @Size(max = 100)
@@ -26,34 +27,45 @@ public class User {
     
     @NotBlank
     @Size(max = 255)
-    private String password;
+    @Column(name = "password_hash")
+    private String passwordHash;
     
-    @Size(max = 30)
-    @Column(name = "phone_number")
-    private String phoneNumber;
+    @Size(max = 20)
+    private String phone;
+    
+    @Column(name = "registration_date")
+    private LocalDateTime registrationDate;
+    
+    private Boolean active = true;
+    
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
     
     // Constructors
     public User() {}
     
-    public User(String name, String email, String password) {
+    public User(String name, String email, String passwordHash) {
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.passwordHash = passwordHash;
     }
     
-    public User(String name, String email, String password, String phoneNumber) {
+    public User(String name, String email, String passwordHash, String phone) {
         this.name = name;
         this.email = email;
-        this.password = password;
-        this.phoneNumber = phoneNumber;
+        this.passwordHash = passwordHash;
+        this.phone = phone;
     }
     
     // Getters and Setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
     
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
     
@@ -73,19 +85,65 @@ public class User {
         this.email = email;
     }
     
-    public String getPassword() {
-        return password;
+    public String getPasswordHash() {
+        return passwordHash;
     }
     
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
     
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone() {
+        return phone;
     }
     
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    
+    public LocalDateTime getRegistrationDate() {
+        return registrationDate;
+    }
+    
+    public void setRegistrationDate(LocalDateTime registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+    
+    public Boolean getActive() {
+        return active;
+    }
+    
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+    
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+    
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+        if (registrationDate == null) {
+            registrationDate = LocalDateTime.now();
+        }
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 } 

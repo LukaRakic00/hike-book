@@ -8,6 +8,7 @@ import rs.hikeandbook.dto.SigninRequest;
 import rs.hikeandbook.dto.SignupRequest;
 import rs.hikeandbook.model.User;
 import rs.hikeandbook.repository.UserRepository;
+import rs.hikeandbook.util.JwtUtil;
 
 @Service
 public class AuthService {
@@ -17,6 +18,9 @@ public class AuthService {
     
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private JwtUtil jwtUtil;
     
     public AuthResponse signup(SignupRequest request) {
         // Check if user already exists
@@ -28,8 +32,8 @@ public class AuthService {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setPhoneNumber(request.getPhoneNumber());
+        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.setPhone(request.getPhoneNumber());
         
         userRepository.save(user);
         
@@ -46,13 +50,13 @@ public class AuthService {
         }
         
         // Check password
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             return AuthResponse.error("Incorrect password.");
         }
         
-        // Here you should generate JWT token
-        // For now, return a successful response with a dummy token
-        return AuthResponse.success("dummy-token", "Login successful.");
+        // Generate JWT token
+        String token = jwtUtil.generateToken(user.getEmail(), user.getId());
+        return AuthResponse.success(token, "Login successful.");
     }
     
     public AuthResponse signout(String token) {
@@ -60,18 +64,20 @@ public class AuthService {
             return AuthResponse.error("Token is required for signout.");
         }
         
-        // Remove "Bearer " prefix if present
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
+        // Extract token from header
+        String actualToken = jwtUtil.extractTokenFromHeader(token);
+        
+        if (actualToken == null) {
+            return AuthResponse.error("Invalid token format.");
         }
         
-        // Here you should invalidate the JWT token
-        // For now, we'll just return a success response
-        // In a real implementation, you would:
-        // 1. Validate the token
-        // 2. Add it to a blacklist
-        // 3. Or use a shorter expiration time
+        // Validate token
+        if (!jwtUtil.validateToken(actualToken)) {
+            return AuthResponse.error("Invalid or expired token.");
+        }
         
+        // In a real implementation, you would add the token to a blacklist
+        // For now, we'll just return a success response
         return AuthResponse.success(null, "Successfully signed out.");
     }
 } 
