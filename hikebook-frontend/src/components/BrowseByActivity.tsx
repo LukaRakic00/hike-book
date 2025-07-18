@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { apiService, Activity } from '../services/api';
-import { getActivityIconUrl } from '../utils/cloudinary';
 import './BrowseByActivity.css';
 
 export default function BrowseByActivity() {

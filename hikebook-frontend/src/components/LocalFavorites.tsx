@@ -228,10 +228,18 @@ export default function LocalFavorites() {
     <div className="local-favorites">
       <div className="local-favorites-container">
         <div className="local-favorites-header">
-          <h2 className="local-favorites-title">
-            Local favorites near <span style={{ textDecoration: 'underline' }}>Belgrade</span>
-          </h2>
-          <p className="local-favorites-subtitle">Discover the best trails in your area</p>
+          <div className="header-content">
+            <h2 className="local-favorites-title">
+              Local favorites near <span style={{ textDecoration: 'underline' }}>Belgrade</span>
+            </h2>
+            <p className="local-favorites-subtitle">Discover the best trails in your area</p>
+          </div>
+          <a href="/explore" className="explore-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m-6 3l6-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Explore Map
+          </a>
         </div>
         
         <div style={{ position: 'relative' }}>

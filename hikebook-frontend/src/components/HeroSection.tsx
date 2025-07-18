@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Navbar from './Navbar';
 import './HeroSection.css';
 
 const heroImages = [
@@ -43,6 +44,9 @@ export default function HeroSection() {
           </div>
         ))}
       </div>
+
+      {/* Navbar - Integrated as part of hero */}
+      <Navbar />
 
       {/* Content */}
       <div className="hero-content">

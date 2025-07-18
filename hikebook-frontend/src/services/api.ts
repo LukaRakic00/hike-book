@@ -224,15 +224,15 @@ class ApiService {
     const queryString = searchParams.toString();
     const endpoint = queryString ? `/api/trails?${queryString}` : '/api/trails';
     
-    const response = await this.request<any>(endpoint);
+    const response = await this.request<{ success: boolean; data: unknown; message?: string }>(endpoint);
     
     // Handle both Page and List responses
     if (response.success && response.data) {
       // If data has content property (Page object), use it
-      if (response.data.content && Array.isArray(response.data.content)) {
+      if (typeof response.data === 'object' && response.data !== null && 'content' in response.data && Array.isArray((response.data as { content: Trail[] }).content)) {
         return {
           success: true,
-          data: response.data.content,
+          data: (response.data as { content: Trail[] }).content,
           message: response.message
         };
       }
@@ -240,13 +240,13 @@ class ApiService {
       if (Array.isArray(response.data)) {
         return {
           success: true,
-          data: response.data,
+          data: response.data as Trail[],
           message: response.message
         };
       }
     }
     
-    return response;
+    return response as TrailsResponse;
   }
 
   async getActivities(): Promise<ActivitiesResponse> {
@@ -275,15 +275,15 @@ class ApiService {
 
   // Photo methods
   async getTrailPhotos(trailId: number): Promise<PhotosResponse> {
-    const response = await this.request<any>(`/api/photos/trail/${trailId}`);
+    const response = await this.request<{ success: boolean; data: unknown; message?: string }>(`/api/photos/trail/${trailId}`);
     
     // Handle both Page and List responses
     if (response.success && response.data) {
       // If data has content property (Page object), use it
-      if (response.data.content && Array.isArray(response.data.content)) {
+      if (typeof response.data === 'object' && response.data !== null && 'content' in response.data && Array.isArray((response.data as { content: PhotoDto[] }).content)) {
         return {
           success: true,
-          data: response.data.content,
+          data: (response.data as { content: PhotoDto[] }).content,
           message: response.message
         };
       }
@@ -291,13 +291,13 @@ class ApiService {
       if (Array.isArray(response.data)) {
         return {
           success: true,
-          data: response.data,
+          data: response.data as PhotoDto[],
           message: response.message
         };
       }
     }
     
-    return response;
+    return response as PhotosResponse;
   }
 
   async getMainPhoto(trailId: number): Promise<PhotosResponse> {

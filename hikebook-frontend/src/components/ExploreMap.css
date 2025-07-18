@@ -1,0 +1,242 @@
+/* Explore Map Styles */
+.explore-map {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Destination Markers */
+.destination-marker {
+  background: none !important;
+  border: none !important;
+}
+
+.marker-content {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 2px solid white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.marker-content:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.marker-count {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.marker-label {
+  font-size: 8px;
+  font-weight: 500;
+  line-height: 1;
+  opacity: 0.9;
+}
+
+/* Trail Markers */
+.trail-marker {
+  background: none !important;
+  border: none !important;
+}
+
+.trail-marker-content {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 2px solid white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.trail-marker-content:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Popup Styles */
+.destination-popup {
+  padding: 16px;
+  min-width: 200px;
+}
+
+.destination-popup h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.destination-popup .region {
+  margin: 0 0 8px 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.destination-popup .trail-count {
+  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+.explore-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.explore-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Trail Popup */
+.trail-popup {
+  padding: 16px;
+  min-width: 220px;
+}
+
+.trail-popup h4 {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.trail-info {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.trail-info .difficulty {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.trail-info .difficulty.easy {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.trail-info .difficulty.moderate {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.trail-info .difficulty.hard {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.trail-info .length,
+.trail-info .rating {
+  padding: 4px 8px;
+  background: #f3f4f6;
+  color: #374151;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.activities {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.activity-tag {
+  padding: 2px 6px;
+  background: #e0e7ff;
+  color: #3730a3;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.view-trail-btn {
+  background: #22c55e;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.view-trail-btn:hover {
+  background: #16a34a;
+  transform: translateY(-1px);
+}
+
+/* Leaflet Popup Customization */
+.leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  border-radius: 12px;
+}
+
+.leaflet-popup-tip {
+  background: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .destination-popup,
+  .trail-popup {
+    min-width: 180px;
+    padding: 12px;
+  }
+  
+  .destination-popup h3,
+  .trail-popup h4 {
+    font-size: 0.95rem;
+  }
+  
+  .trail-info {
+    gap: 6px;
+  }
+  
+  .trail-info .difficulty,
+  .trail-info .length,
+  .trail-info .rating {
+    font-size: 0.75rem;
+    padding: 3px 6px;
+  }
+} 

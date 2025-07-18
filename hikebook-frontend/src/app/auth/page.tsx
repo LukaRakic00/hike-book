@@ -211,7 +211,7 @@ function AuthSignIn({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
 }
 
 function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void }) {
-  const { signUp, isLoading } = useAuth();
+  const { signUp, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
   const [form, setForm] = useState({
     name: '',
@@ -223,6 +223,15 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
   const [focus, setFocus] = useState<string | null>(null);
   const [error, setError] = useState<string>('');
   const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      setIsRedirecting(true);
+      router.replace('/dashboard');
+    }
+  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -236,7 +245,7 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
         password: form.password,
       });
       if (response.success) {
-        router.push('/dashboard');
+        // The redirect will be handled by useEffect when isAuthenticated changes
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Sign up failed';
@@ -244,6 +253,39 @@ function AuthSignUp({ imgIdx, onSwitch }: { imgIdx: number; onSwitch: () => void
       setShowErrorPopup(true);
     }
   };
+
+  // Show redirecting overlay
+  if (isRedirecting) {
+    return (
+      <div className="auth-flex">
+        <div className="auth-form-col">
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+            gap: '20px'
+          }}>
+            <div style={{
+              width: '60px',
+              height: '60px',
+              border: '4px solid #f3f3f3',
+              borderTop: '4px solid #22c55e',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }} />
+            <h2 style={{ color: '#374151', margin: 0 }}>Welcome to Hike&Book!</h2>
+            <p style={{ color: '#6b7280', margin: 0 }}>Redirecting to dashboard...</p>
+          </div>
+        </div>
+        <div className="auth-img-col">
+          <img src={images[imgIdx]} alt="mountain" className="auth-img" width={800} height={1200} style={{ objectFit: 'cover' }} />
+          <div className="auth-img-overlay" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -469,7 +511,7 @@ function MobileAuthSignIn({ onSwitch }: { onSwitch: () => void }) {
 }
 
 function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
-  const { signUp, isLoading } = useAuth();
+  const { signUp, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
   const [form, setForm] = useState({
     name: '',
@@ -481,6 +523,15 @@ function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
   const [focus, setFocus] = useState<string | null>(null);
   const [error, setError] = useState<string>('');
   const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      setIsRedirecting(true);
+      router.replace('/dashboard');
+    }
+  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -494,7 +545,7 @@ function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
         password: form.password,
       });
       if (response.success) {
-        router.push('/dashboard');
+        // The redirect will be handled by useEffect when isAuthenticated changes
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Sign up failed';
@@ -502,6 +553,32 @@ function MobileAuthSignUp({ onSwitch }: { onSwitch: () => void }) {
       setShowErrorPopup(true);
     }
   };
+
+  // Show redirecting overlay
+  if (isRedirecting) {
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        gap: '20px',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+      }}>
+        <div style={{
+          width: '60px',
+          height: '60px',
+          border: '4px solid #f3f3f3',
+          borderTop: '4px solid #22c55e',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite'
+        }} />
+        <h2 style={{ color: 'white', margin: 0, textAlign: 'center' }}>Welcome to Hike&Book!</h2>
+        <p style={{ color: 'rgba(255, 255, 255, 0.8)', margin: 0, textAlign: 'center' }}>Redirecting to dashboard...</p>
+      </div>
+    );
+  }
 
   return (
     <>
