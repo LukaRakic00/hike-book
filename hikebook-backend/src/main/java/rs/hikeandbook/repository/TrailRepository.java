@@ -59,4 +59,7 @@ public interface TrailRepository extends JpaRepository<Trail, Integer> {
         @Param("activityId") Integer activityId,
         @Param("difficulty") String difficulty
     );
+    
+    @Query("SELECT t FROM Trail t LEFT JOIN t.destination d ORDER BY t.createdAt DESC")
+    List<Trail> findAllWithDestinationName();
 } 

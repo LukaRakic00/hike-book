@@ -18,4 +18,6 @@ public interface DestinationRepository extends JpaRepository<Destination, Intege
     
     @Query("SELECT d FROM Destination d WHERE d.region = :region")
     List<Destination> findByRegion(@Param("region") String region);
+    
+    List<Destination> findAllByOrderByCreatedAtDesc();
 } 

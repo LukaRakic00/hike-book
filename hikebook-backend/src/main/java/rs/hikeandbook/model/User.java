@@ -38,6 +38,10 @@ public class User {
     
     private Boolean active = true;
     
+    @Size(max = 20)
+    @Column(name = "role")
+    private String role = "user"; // Default role je 'user'
+    
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     
@@ -115,6 +119,14 @@ public class User {
     
     public void setActive(Boolean active) {
         this.active = active;
+    }
+    
+    public String getRole() {
+        return role;
+    }
+    
+    public void setRole(String role) {
+        this.role = role;
     }
     
     public LocalDateTime getCreatedAt() {

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.hikeandbook.dto.AuthResponse;
 import rs.hikeandbook.dto.SigninRequest;
+import rs.hikeandbook.dto.SigninResponse;
 import rs.hikeandbook.dto.SignupRequest;
 import rs.hikeandbook.service.AuthService;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class AuthController {
     
     @PostMapping("/signin")
     public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest request) {
-        AuthResponse response = authService.signin(request);
+        SigninResponse response = authService.signinWithUserData(request);
         
         if (response.isSuccess()) {
             return ResponseEntity.ok(response);

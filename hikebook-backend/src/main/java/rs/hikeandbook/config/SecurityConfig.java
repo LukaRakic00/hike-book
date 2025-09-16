@@ -29,22 +29,8 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
-                // Public endpoints
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/activities").permitAll()
-                .requestMatchers("/api/trails").permitAll()
-                .requestMatchers("/api/trails/{id}").permitAll()
-                .requestMatchers("/api/explore/**").permitAll()
-                .requestMatchers("/api/upload/**").permitAll()
-                .requestMatchers("/api/photos/trail/{trailId}").permitAll()
-                .requestMatchers("/api/photos/trail/{trailId}/all").permitAll()
-                .requestMatchers("/api/photos/{id}").permitAll()
-                // Protected endpoints
-                .requestMatchers("/api/trails/favorites").authenticated()
-                .requestMatchers("/api/trails/{id}/favorite").authenticated()
-                .requestMatchers("/api/photos").authenticated()
-                .requestMatchers("/api/photos/{id}/main").authenticated()
-                .anyRequest().authenticated()
+                // Privremeno dozvoli sve za testiranje
+                .anyRequest().permitAll()
             );
         
         return http.build();

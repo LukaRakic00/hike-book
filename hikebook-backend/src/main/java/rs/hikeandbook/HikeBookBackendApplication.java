@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "rs.hikeandbook")
 @RestController
 @EntityScan("rs.hikeandbook.model")
 @EnableJpaRepositories("rs.hikeandbook.repository")

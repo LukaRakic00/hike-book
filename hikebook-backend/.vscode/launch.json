@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch HikeBook Backend (Local Profile)",
+            "request": "launch",
+            "mainClass": "rs.hikeandbook.HikeBookBackendApplication",
+            "projectName": "hikebook-backend",
+            "args": "--spring.profiles.active=local",
+            "env": {
+                "SPRING_PROFILES_ACTIVE": "local"
+            }
+        },
+        {
+            "type": "java",
+            "name": "Launch HikeBook Backend (Default Profile)",
+            "request": "launch",
+            "mainClass": "rs.hikeandbook.HikeBookBackendApplication",
+            "projectName": "hikebook-backend"
+        }
+    ]
+} 

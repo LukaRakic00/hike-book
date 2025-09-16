@@ -34,7 +34,7 @@ out/
 /.nb-gradle/
 
 ### VS Code ###
-.vscode/
+# .vscode/ - uklonjen jer je potreban za VS Code konfiguraciju
 
 ### Environment Variables ###
 .env

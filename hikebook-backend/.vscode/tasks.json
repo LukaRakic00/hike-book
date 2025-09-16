@@ -1,0 +1,54 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run HikeBook Backend (Local Profile)",
+            "type": "shell",
+            "command": "java",
+            "args": [
+                "-jar",
+                "build/libs/hikebook-backend-0.0.1-SNAPSHOT.jar",
+                "--spring.profiles.active=local"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build HikeBook Backend",
+            "type": "shell",
+            "command": ".\\gradlew.bat",
+            "args": ["build"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Clean and Build",
+            "type": "shell",
+            "command": ".\\gradlew.bat",
+            "args": ["clean", "build"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+} 
